@@ -1,0 +1,11 @@
+PORT=
+
+
+MONGO_URL=mongodb+srv://DentAid_User:UkwGs6HjU4KNJ5C5@dentaiddb.edrtb.mongodb.net/
+MONGO_DBNAME=dentaid
+
+JWT_SEED= aAsaf4wGs6HryerJd5
+
+MAILER_SERVICE=
+MAILER_EMAIL=
+MAILER_SECRET_KEY=
