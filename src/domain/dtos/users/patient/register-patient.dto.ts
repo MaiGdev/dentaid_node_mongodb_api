@@ -2,7 +2,6 @@ export class RegisterPatientDto {
   constructor(
     public user: string,
     public bloodType: string,
-    public genre: string,
     public knownAllergies: [],
     public medicalConditions: []
   ) {}
@@ -13,12 +12,9 @@ export class RegisterPatientDto {
     const {
       user,
       bloodType,
-      genre,
       knownAllergies,
       medicalConditions,
     } = object;
-
-    /*     const { id: user } = object.user; */
 
     const requiredFields = [
       "user",
@@ -39,7 +35,6 @@ export class RegisterPatientDto {
       new RegisterPatientDto(
         user,
         bloodType,
-        genre,
         knownAllergies,
         medicalConditions
       ),

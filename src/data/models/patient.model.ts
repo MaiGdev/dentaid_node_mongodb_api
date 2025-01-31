@@ -9,12 +9,7 @@ const patientSchema = new mongoose.Schema({
   bloodType: {
     type: String,
     required: true,
-    enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
-  },
-  genre: {
-    type: String,
-    required: true,
-    enum: ["Male", "Female", "Other", "Prefer Not to Say"],
+    enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "Unknown"],
   },
   knownAllergies: {
     type: [String],

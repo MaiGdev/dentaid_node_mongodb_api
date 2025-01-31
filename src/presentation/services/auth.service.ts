@@ -1,57 +1,90 @@
+import mongoose from "mongoose";
 import { bcryptAdapter, JwtAdapter } from "../../config";
-import { UserModel } from "../../data/models";
-import { LoginUserDto, RegisterUserDto } from "../../domain/dtos";
+import { DentistModel, PatientModel, UserModel } from "../../data/models";
+import {
+  LoginUserDto,
+  RegisterDentistDto,
+  RegisterPatientDto,
+  RegisterUserDto,
+} from "../../domain/dtos";
 import { CustomError } from "../../domain/errors/custom.error";
 
 export class AuthService {
-  public async registerUser(registerUserDto: RegisterUserDto) {
-    const existingUser = await UserModel.findOne({
-      $or: [
-        { email: registerUserDto.email },
-        { identification: registerUserDto.identification },
-        { phoneNumber: registerUserDto.phoneNumber },
-        { emergencyPhoneNumber: registerUserDto.emergencyPhoneNumber },
-      ],
-    });
+  public async registerUser(
+    registerUserDto: RegisterUserDto,
+    registerDentistDto?: RegisterDentistDto,
+    registerPatientDto?: RegisterPatientDto
+  ) {
+    const session = await mongoose.startSession();
 
-    if (existingUser) {
-      if (existingUser.email === registerUserDto.email) {
-        throw CustomError.badRequest("Email already exists");
-      }
-      if (existingUser.identification === registerUserDto.identification) {
-        throw CustomError.badRequest("Identification already exists");
-      }
-      if (existingUser.phoneNumber === registerUserDto.phoneNumber) {
-        throw CustomError.badRequest("Phone number already exists");
-      }
-      if (
-        existingUser.emergencyPhoneNumber ===
-        registerUserDto.emergencyPhoneNumber
-      ) {
-        throw CustomError.badRequest("Emergency phone number already exists");
-      }
-    }
-
+    let userData;
     try {
-      const newUser = new UserModel(registerUserDto);
+      session.startTransaction();
+      const existingUser = await UserModel.findOne({
+        $or: [
+          { email: registerUserDto.email },
+          { identification: registerUserDto.identification },
+          { phoneNumber: registerUserDto.phoneNumber },
+          { emergencyPhoneNumber: registerUserDto.emergencyPhoneNumber },
+        ],
+      }).session(session);
 
+      if (existingUser) {
+        if (existingUser.email === registerUserDto.email) {
+          throw CustomError.badRequest("Email already exists");
+        }
+        if (existingUser.identification === registerUserDto.identification) {
+          throw CustomError.badRequest("Identification already exists");
+        }
+        if (existingUser.phoneNumber === registerUserDto.phoneNumber) {
+          throw CustomError.badRequest("Phone number already exists");
+        }
+        if (
+          existingUser.emergencyPhoneNumber ===
+          registerUserDto.emergencyPhoneNumber
+        ) {
+          throw CustomError.badRequest("Emergency phone number already exists");
+        }
+      }
+      const newUser = new UserModel(registerUserDto);
       newUser.password = bcryptAdapter.hash(newUser.password);
 
-      await newUser.save();
+      await newUser.save({ session });
+
+      userData = {
+        id: newUser.id,
+        email: newUser.email,
+        name: newUser.fullName,
+      };
+
+      if (registerDentistDto) {
+        const newDentist = new DentistModel(registerDentistDto);
+        newDentist.user = newUser._id;
+        await newDentist.save({ session });
+        userData = { ...userData, dentistId: newDentist._id };
+      }
+      if (registerPatientDto) {
+        const newPatient = new PatientModel(registerPatientDto);
+        newPatient.user = newUser._id;
+        await newPatient.save({ session });
+        userData = { ...userData, patientId: newPatient._id };
+      }
+
+      await session.commitTransaction();
 
       const token = await JwtAdapter.generateToken({
         id: newUser.id,
         email: newUser.email,
+        name: newUser.fullName,
       });
-      if (!token) throw CustomError.internalServer("Error while creating JWT");
 
-      return {
-        user: newUser,
-        token,
-      };
+      return { user: userData, token };
     } catch (error) {
+      await session.abortTransaction();
       console.error(`Error creating user: ${error}`);
       throw error;
+    } finally {
+      session.endSession();
     }
   }
 
@@ -73,11 +106,16 @@ export class AuthService {
       const token = await JwtAdapter.generateToken({
         id: existingUser.id,
         email: existingUser.email,
+        name: existingUser.fullName,
       });
       if (!token) throw CustomError.internalServer("Error while creating JWT");
 
       return {
-        existingUser,
+        user: {
+          id: existingUser.id,
+          email: existingUser.email,
+          name: existingUser.fullName,
+        },
         token,
       };
     } catch (error) {
@@ -87,7 +125,7 @@ export class AuthService {
   }
 
   public async renewToken(token: any) {
-    const { id, email } = await JwtAdapter.verifyToken(token);
+    const { id, email, fullName } = await JwtAdapter.verifyToken(token);
 
     const newToken = await JwtAdapter.generateToken({
       id,
@@ -95,8 +133,10 @@ export class AuthService {
     });
     return {
       token: newToken,
-      id,
-      email,
+      user: {
+        id,
+        email,
+      },
     };
   }
 }

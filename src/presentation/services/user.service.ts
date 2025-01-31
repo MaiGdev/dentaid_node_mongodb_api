@@ -32,7 +32,7 @@ export class UserService {
   }
 
   public async registerPatient(registerPatientDto: RegisterPatientDto) {
-    const { bloodType, genre, knownAllergies, medicalConditions, user } =
+    const { bloodType, knownAllergies, medicalConditions, user } =
       registerPatientDto;
 
     const patientExist = await PatientModel.findOne({ id: user });
