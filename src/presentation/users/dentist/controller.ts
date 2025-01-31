@@ -7,8 +7,6 @@ export class DentistController {
   constructor(private readonly userService: UserService) {}
 
   register = (req: Request, res: Response) => {
-    /*     const obj = req.body;
-    console.log(obj); */
     const [error, registerDentistDto] = RegisterDentistDto.register(req.body);
 
     if (error) return res.status(400).json({ error });

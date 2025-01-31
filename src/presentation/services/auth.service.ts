@@ -1,7 +1,6 @@
 import { bcryptAdapter, JwtAdapter } from "../../config";
 import { UserModel } from "../../data/models";
-import { LoginUserDto } from "../../domain/dtos";
-import { RegisterUserDto } from "../../domain/dtos";
+import { LoginUserDto, RegisterUserDto } from "../../domain/dtos";
 import { CustomError } from "../../domain/errors/custom.error";
 
 export class AuthService {
@@ -85,5 +84,19 @@ export class AuthService {
       console.error(`Error creating user: ${error}`);
       throw error;
     }
+  }
+
+  public async renewToken(token: any) {
+    const { id, email } = await JwtAdapter.verifyToken(token);
+
+    const newToken = await JwtAdapter.generateToken({
+      id,
+      email,
+    });
+    return {
+      token: newToken,
+      id,
+      email,
+    };
   }
 }

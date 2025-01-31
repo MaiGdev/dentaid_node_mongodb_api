@@ -16,7 +16,7 @@ export class JwtAdapter {
     });
   }
 
-  static async verifyToken(token: string) {
+  static async verifyToken(token: string): Promise<any> {
     return new Promise((resolve, reject) => {
       jwt.verify(token, JWT_SEED, (err, jwt_payload) => {
         if (err) return resolve(null);

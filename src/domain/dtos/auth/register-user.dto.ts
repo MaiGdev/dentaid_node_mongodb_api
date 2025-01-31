@@ -10,7 +10,7 @@ export class RegisterUserDto {
     public phoneNumber: string,
     public emergencyPhoneNumber: string,
     public address: string,
-    public birthdate: Date,
+    public dateOfBirth: Date,
     public role: string
   ) {}
 
@@ -24,7 +24,7 @@ export class RegisterUserDto {
       phoneNumber,
       emergencyPhoneNumber,
       address,
-      birthdate,
+      dateOfBirth,
       role,
     } = object;
 
@@ -46,7 +46,7 @@ export class RegisterUserDto {
       }
     });
 
-    if (!MomentAdapter.isValid(birthdate)) return ["Date format incorrect"];
+    if (!MomentAdapter.isValid(dateOfBirth)) return ["Date format incorrect"];
 
     const registerDto = new RegisterUserDto(
       fullName,
@@ -57,7 +57,7 @@ export class RegisterUserDto {
       phoneNumber,
       emergencyPhoneNumber,
       address,
-      birthdate,
+      dateOfBirth,
       role
     );
     return [undefined, registerDto];

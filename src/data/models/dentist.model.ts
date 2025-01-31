@@ -9,6 +9,10 @@ const dentistSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  speciality: {
+    type: [String],
+    required: [true, "Speciality is required"],
+  },
   medicalLicenseNumber: {
     type: String,
     required: [true, "Medical License Number is required"],
@@ -23,8 +27,7 @@ const dentistSchema = new mongoose.Schema({
   },
   yearsOfExperience: {
     type: Number,
-  }
-  
+  },
 });
 
 dentistSchema.set("toJSON", {

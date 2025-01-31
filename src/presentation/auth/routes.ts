@@ -12,6 +12,7 @@ export class AuthRoutes {
 
     router.post("/register", controller.registerUser);
     router.post("/login", controller.login);
+    router.post("/renew", controller.renewToken);
 
     return router;
 

@@ -7,6 +7,18 @@ import { AuthService } from "../services";
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  /*
+  fullName
+email
+password
+gender
+identification
+phoneNumber
+emergencyPhoneNumber
+address
+birthdate
+role
+   */
   registerUser = (req: Request, res: Response) => {
     const [error, registerDto] = RegisterUserDto.register(req.body);
     if (error) return res.status(400).json({ error });
@@ -25,6 +37,16 @@ export class AuthController {
 
     this.authService
       .login(loginDto!)
+      .then((user) => res.status(200).json(user))
+      .catch((err) => handleCustomError(err, res));
+  };
+
+  renewToken = (req: Request, res: Response) => {
+    console.log(req.body);
+    /*     res.status(200).json("jshfaslj"); */
+
+    this.authService
+      .renewToken(req.body.token)
       .then((user) => res.status(200).json(user))
       .catch((err) => handleCustomError(err, res));
   };

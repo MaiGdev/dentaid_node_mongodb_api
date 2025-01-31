@@ -2,6 +2,7 @@ export class RegisterDentistDto {
   constructor(
     public user: string,
     public medicalLicenseNumber: string,
+    public speciality: [],
     public university: string,
     public workplace: string,
     public yearsOfExperience: string
@@ -13,22 +14,21 @@ export class RegisterDentistDto {
     const {
       user,
       medicalLicenseNumber,
+      speciality,
       university,
       workplace,
       yearsOfExperience,
     } = object;
 
-    /*     const { id: user } = object.user; */
-
     const requiredFields = [
       "user",
       "medicalLicenseNumber",
+      "speciality",
       "university",
       "workplace",
       "yearsOfExperience",
     ];
 
-/*     if (!user) return [`Missing user id`]; */
 
     requiredFields.map((field) => {
       if (!object[field]) {
@@ -41,6 +41,7 @@ export class RegisterDentistDto {
       new RegisterDentistDto(
         user,
         medicalLicenseNumber,
+        speciality,
         university,
         workplace,
         yearsOfExperience

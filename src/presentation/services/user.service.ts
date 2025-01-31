@@ -4,13 +4,7 @@ import { RegisterDentistDto, RegisterPatientDto } from "../../domain/dtos";
 
 export class UserService {
   public async registerDentist(registerDentistDto: RegisterDentistDto) {
-    const {
-      user,
-      medicalLicenseNumber,
-      university,
-      workplace,
-      yearsOfExperience,
-    } = registerDentistDto;
+    const { user, medicalLicenseNumber } = registerDentistDto;
 
     const dentistExist = await DentistModel.findOne({
       $or: [{ medicalLicenseNumber: medicalLicenseNumber }, { id: user }],
@@ -52,7 +46,7 @@ export class UserService {
       return {
         message: "Patient registered successfully",
         patient: newPatient,
-      }
+      };
     } catch (error) {
       console.error(`Error registering patient: ${error}`);
       throw error;
