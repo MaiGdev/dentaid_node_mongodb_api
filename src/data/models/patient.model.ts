@@ -5,6 +5,7 @@ const patientSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
     required: true,
+    unique: true,
   },
   bloodType: {
     type: String,

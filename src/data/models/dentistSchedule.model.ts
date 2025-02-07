@@ -7,18 +7,33 @@ interface IDentistSchedule extends Document {
   endTime: string;
   slotDuration: number;
   breaks: { start: string; end: string }[];
+  slots: { start: string; end: string }[];
 }
 
-const DentistScheduleSchema = new Schema({
-  dentist: { type: Schema.Types.ObjectId, ref: "User", required: true },
+const dentistScheduleSchema = new Schema({
+  dentist: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+    unique: true,
+  },
   dayOfWeek: { type: Number, required: true },
   startTime: { type: String, required: true },
   endTime: { type: String, required: true },
   slotDuration: { type: Number, default: 30 },
   breaks: [{ start: String, end: String }],
+  slots: [{ start: String, end: String }],
 });
 
-export const DentistSchedule = mongoose.model<IDentistSchedule>(
+dentistScheduleSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret, options) {
+    delete ret._id;
+  },
+});
+
+export const DentistScheduleModel = mongoose.model<IDentistSchedule>(
   "DentistSchedule",
-  DentistScheduleSchema
+  dentistScheduleSchema
 );

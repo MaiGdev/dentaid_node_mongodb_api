@@ -29,7 +29,6 @@ export class RegisterDentistDto {
       "yearsOfExperience",
     ];
 
-
     requiredFields.map((field) => {
       if (!object[field]) {
         return [`Missing ${field}`];

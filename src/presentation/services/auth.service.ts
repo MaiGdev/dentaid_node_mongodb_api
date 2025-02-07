@@ -55,6 +55,7 @@ export class AuthService {
         id: newUser.id,
         email: newUser.email,
         name: newUser.fullName,
+        role: newUser.role[0],
       };
 
       if (registerDentistDto) {
@@ -72,11 +73,7 @@ export class AuthService {
 
       await session.commitTransaction();
 
-      const token = await JwtAdapter.generateToken({
-        id: newUser.id,
-        email: newUser.email,
-        name: newUser.fullName,
-      });
+      const token = await JwtAdapter.generateToken(userData);
 
       return { user: userData, token };
     } catch (error) {
@@ -107,6 +104,7 @@ export class AuthService {
         id: existingUser.id,
         email: existingUser.email,
         name: existingUser.fullName,
+        role: existingUser.role[0],
       });
       if (!token) throw CustomError.internalServer("Error while creating JWT");
 
@@ -115,6 +113,7 @@ export class AuthService {
           id: existingUser.id,
           email: existingUser.email,
           name: existingUser.fullName,
+          role: existingUser.role[0],
         },
         token,
       };
@@ -125,17 +124,21 @@ export class AuthService {
   }
 
   public async renewToken(token: any) {
-    const { id, email, fullName } = await JwtAdapter.verifyToken(token);
+    const { id, email, name, role } = await JwtAdapter.verifyToken(token);
 
     const newToken = await JwtAdapter.generateToken({
       id,
       email,
+      name,
+      role,
     });
     return {
       token: newToken,
       user: {
         id,
         email,
+        name,
+        role,
       },
     };
   }

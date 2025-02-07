@@ -1,18 +1,16 @@
-import { Appointment, DentistSchedule } from "../../data";
+import { Appointment, DentistScheduleModel } from "../../data";
 
-export class DentistService {
+export class AppointmentService {
   async getAvailableSlots(dentistId: string, date: Date) {
     const dayOfWeek = date.getDay();
 
-    // Obtener el horario base del dentista
-    const schedule = await DentistSchedule.findOne({
+    const schedule = await DentistScheduleModel.findOne({
       dentist: dentistId,
       dayOfWeek: dayOfWeek,
     });
 
     if (!schedule) return [];
 
-    // Obtener citas existentes para esa fecha
     const startOfDay = new Date(date.setHours(0, 0, 0, 0));
     const endOfDay = new Date(date.setHours(23, 59, 59, 999));
 
@@ -22,7 +20,6 @@ export class DentistService {
       end: { $lte: endOfDay },
     });
 
-    // Generar slots disponibles
     const allSlots = [];
     const [startHour, startMinute] = schedule.startTime.split(":").map(Number);
     const [endHour, endMinute] = schedule.endTime.split(":").map(Number);
@@ -53,4 +50,5 @@ export class DentistService {
         )
     );
   }
+
 }

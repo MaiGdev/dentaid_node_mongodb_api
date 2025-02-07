@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { DentistModel, PatientModel, UserModel } from "../../data/models";
 import { CustomError } from "../../domain";
 import { RegisterDentistDto, RegisterPatientDto } from "../../domain/dtos";
@@ -21,11 +22,6 @@ export class UserService {
       console.error(`Error registering dentist: ${error}`);
       throw error;
     }
-  }
-
-  public async getDentists() {
-    const dentists = await DentistModel.find();
-    return dentists;
   }
 
   public async registerDentist(registerDentistDto: RegisterDentistDto) {
@@ -70,6 +66,38 @@ export class UserService {
     } catch (error) {
       console.error(`Error registering patient: ${error}`);
       throw error;
+    }
+  }
+
+  public async getUserByUserTypeId(id: string, userType: string) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error("ID inválido");
+    }
+
+    try {
+      switch (userType) {
+        case "ADMIN_ROLE":
+          return await UserModel.findById(id);
+      
+        case "PATIENT_ROLE":
+          const patient = await PatientModel.findOne({
+            _id: id,
+          }).populate("user");
+          if (!patient) throw new Error("Paciente no encontrado");
+          return patient;
+      
+        case "DENTIST_ROLE":
+          const dentist = await DentistModel.findOne({
+            _id: id,
+          }).populate("user");
+          if (!dentist) throw new Error("Dentista no encontrado");
+          return dentist;
+      
+        default:
+          return await UserModel.findById(id);
+      }
+    } catch (error) {
+      throw new Error(`Error obteniendo usuario: ${error}`);
     }
   }
 }
