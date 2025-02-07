@@ -15,4 +15,15 @@ export class ScheduleService {
       throw new Error(`Error registering schedule: ${error}`);
     }
   }
+
+  public async getScheduleByDentist(dentistId: string) {
+    try {
+      const schedule = await DentistScheduleModel.findOne({
+        dentist: dentistId,
+      });
+      return schedule;
+    } catch (error) {
+      throw new Error(`Error getting schedule: ${error}`);
+    }
+  }
 }

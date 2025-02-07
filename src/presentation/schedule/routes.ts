@@ -15,6 +15,7 @@ export class ScheduleRoutes {
     POST   /api/availability/dentist/:dentistId/slots    
     */
     router.post("/", controller.registerSchedule);
+    router.get("/", controller.getScheduleByDentist);
 
     return router;
   }
