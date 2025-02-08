@@ -1,52 +1,35 @@
+import { ScheduleEntity } from "../../entities/schedule.entity";
+
 export class RegisterScheduleDto {
   constructor(
     public readonly dentist: string,
-    public readonly dayOfWeek: number,
-    public readonly startTime: string,
-    public readonly endTime: string,
-    public readonly slotDuration: number,
-    public readonly breaks: { start: string; end: string }[],
-    public readonly slots: { start: string; end: string }[]
+    public readonly schedule: ScheduleEntity[]
   ) {}
 
-  static registerSchedule = (object: {
-    [key: string]: any;
-  }): [string?, RegisterScheduleDto?] => {
-    const {
-      dentist,
-      dayOfWeek,
-      startTime,
-      endTime,
-      slotDuration,
-      breaks,
-      slots,
-    } = object;
-
-    const requiredFields = [
-      "dentist",
-      "dayOfWeek",
-      "startTime",
-      "endTime",
-      "slotDuration",
-      "breaks",
-      "slots",
-    ];
-    for (const field of requiredFields) {
-      if (object[field] === undefined || object[field] === null) {
-        return [`Missing ${field}`];
-      }
+  static registerSchedule(object: {
+    dentist: string;
+    schedule: any[];
+  }): [string?, RegisterScheduleDto?] {
+    if (!object?.dentist || !Array.isArray(object.schedule)) {
+      return ["Invalid input format"];
     }
-    return [
-      undefined,
-      new RegisterScheduleDto(
-        dentist,
-        dayOfWeek,
-        startTime,
-        endTime,
-        slotDuration,
-        breaks,
-        slots
-      ),
-    ];
-  };
+
+    try {
+      const schedule = object.schedule.map(
+        (day) =>
+          new ScheduleEntity(
+            object.dentist,
+            day.dayOfWeek,
+            day.startTime,
+            day.endTime,
+            day.slotDuration,
+            day.breaks,
+            day.slots
+          )
+      );
+      return [undefined, new RegisterScheduleDto(object.dentist, schedule)];
+    } catch (error) {
+      return ["Error processing schedule data"];
+    }
+  }
 }

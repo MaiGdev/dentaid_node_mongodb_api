@@ -77,22 +77,25 @@ export class UserService {
     try {
       switch (userType) {
         case "ADMIN_ROLE":
-          return await UserModel.findById(id);
-      
+          const admin = await UserModel.findById(id);
+          return {
+            user: admin,
+          };
+
         case "PATIENT_ROLE":
           const patient = await PatientModel.findOne({
             _id: id,
           }).populate("user");
           if (!patient) throw new Error("Paciente no encontrado");
           return patient;
-      
+
         case "DENTIST_ROLE":
           const dentist = await DentistModel.findOne({
             _id: id,
           }).populate("user");
           if (!dentist) throw new Error("Dentista no encontrado");
           return dentist;
-      
+
         default:
           return await UserModel.findById(id);
       }

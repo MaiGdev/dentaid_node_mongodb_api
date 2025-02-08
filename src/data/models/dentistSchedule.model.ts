@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 
 interface IDentistSchedule extends Document {
   dentist: string;
@@ -15,7 +15,6 @@ const dentistScheduleSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
     required: true,
-    unique: true,
   },
   dayOfWeek: { type: Number, required: true },
   startTime: { type: String, required: true },
@@ -29,7 +28,7 @@ dentistScheduleSchema.set("toJSON", {
   virtuals: true,
   versionKey: false,
   transform: function (doc, ret, options) {
-    delete ret._id;
+    delete ret._id; 
   },
 });
 
