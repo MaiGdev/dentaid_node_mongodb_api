@@ -1,54 +1,38 @@
-import { Appointment, DentistScheduleModel } from "../../data";
+import { AppointmentModel } from "../../data";
+import { RegisterAppointmentDto } from "../../domain/dtos/appointment/register.appointment.dto";
 
 export class AppointmentService {
-  async getAvailableSlots(dentistId: string, date: Date) {
-    const dayOfWeek = date.getDay();
+  public async registerAppointment(
+    registerAppointmentDto: RegisterAppointmentDto
+  ) {
+    try {
+      const appointment = new AppointmentModel(registerAppointmentDto);
+      await appointment.save();
 
-    const schedule = await DentistScheduleModel.findOne({
-      dentist: dentistId,
-      dayOfWeek: dayOfWeek,
-    });
-
-    if (!schedule) return [];
-
-    const startOfDay = new Date(date.setHours(0, 0, 0, 0));
-    const endOfDay = new Date(date.setHours(23, 59, 59, 999));
-
-    const appointments = await Appointment.find({
-      dentist: dentistId,
-      start: { $gte: startOfDay },
-      end: { $lte: endOfDay },
-    });
-
-    const allSlots = [];
-    const [startHour, startMinute] = schedule.startTime.split(":").map(Number);
-    const [endHour, endMinute] = schedule.endTime.split(":").map(Number);
-
-    let current = new Date(date);
-    current.setHours(startHour, startMinute, 0, 0);
-
-    const endTime = new Date(date);
-    endTime.setHours(endHour, endMinute, 0, 0);
-
-    while (current < endTime) {
-      const slotEnd = new Date(
-        current.getTime() + schedule.slotDuration * 60000
-      );
-      allSlots.push({ start: new Date(current), end: slotEnd });
-      current = slotEnd;
+      return {
+        message: "Appointment registered successfully",
+        appointment,
+      };
+    } catch (error) {
+      throw new Error(`Error registering schedule: ${error}`);
     }
-
-    const bookedSlots = appointments.map((a) => ({
-      start: a.start,
-      end: a.end,
-    }));
-
-    return allSlots.filter(
-      (slot) =>
-        !bookedSlots.some(
-          (booked) => slot.start < booked.end && slot.end > booked.start
-        )
-    );
   }
 
+  public async getAppointments() {
+    try {
+      const appointments = await AppointmentModel.find();
+      return appointments;
+    } catch (error) {
+      throw new Error(`Error getting appointments: ${error}`);
+    }
+  }
+
+  public async getPatientAppointment(patientId: string) {
+    try {
+      const appointments = await AppointmentModel.find({ patient: patientId });
+      return appointments;
+    } catch (error) {
+      throw new Error(`Error getting appointments: ${error}`);
+    }
+  }
 }

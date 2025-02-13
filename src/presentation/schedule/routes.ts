@@ -16,6 +16,7 @@ export class ScheduleRoutes {
     */
     router.post("/", controller.registerSchedule);
     router.get("/", controller.getScheduleByDentist);
+    router.get("/availableSlots", controller.getAvailableSlots);
 
     return router;
   }

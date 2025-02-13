@@ -28,4 +28,18 @@ export class ScheduleController {
       .then((schedule) => res.status(200).json(schedule))
       .catch((err) => handleCustomError(err, res));
   };
+  getAvailableSlots = (req: Request, res: Response) => {
+    const dentistId = req.query.dentistId as string;
+    const patientId = req.query.patientId as string;
+    const dayOfWeek = req.query.dayOfWeek as string;
+
+    if (!dentistId) return res.status(404).json("DentistId not provided");
+    /*     if (!patientId) return res.status(404).json("patientId not provided"); */
+    if (!dayOfWeek) return res.status(404).json("dayOfWeek not provided");
+
+    this.scheduleService
+      .getAvailableSlots(dentistId, dayOfWeek, patientId)
+      .then((schedule) => res.status(200).json(schedule))
+      .catch((err) => handleCustomError(err, res));
+  };
 }
