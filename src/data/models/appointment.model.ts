@@ -8,19 +8,23 @@ interface IAppointment extends Document {
   status: string;
 }
 
-
 const AppointmentSchema = new Schema({
-  dentist: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  patient: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  date: { type: Schema.Types.Date, ref: "Date", required: true },
+  dentist: { type: Schema.Types.ObjectId, ref: "Dentist", required: true },
+  patient: { type: Schema.Types.ObjectId, ref: "Patient", required: true },
+  date: {
+    type: Date,
+    required: true,
+  },
   dayOfWeek: { type: Number, required: true },
   start: { type: String, required: true },
   end: { type: String, required: true },
   description: { type: String, required: true },
-  status: { type: String, enum: ["pending", "confirmed", "cancelled"] },
+  status: {
+    type: String,
+    enum: ["scheduled", "finished", "cancelled"],
+    default: "scheduled",
+  },
 });
-
-
 
 export const AppointmentModel = mongoose.model<IAppointment>(
   "Appointment",

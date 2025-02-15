@@ -54,7 +54,6 @@ export class ScheduleService {
     patientId?: string
   ) {
     try {
-      // Obtener el horario del dentista para ese día de la semana
       const schedule = await DentistScheduleModel.findOne({
         dentist: dentistId,
         dayOfWeek,
@@ -76,11 +75,8 @@ export class ScheduleService {
           dayOfWeek: dayOfWeek,
         });
       }
-
-      // Crear un conjunto de slots ocupados
       const occupiedSlots = new Set(appointments.map((app) => app.start));
 
-      // Filtrar los slots disponibles
       const availableSlots = schedule.slots.filter(
         (slot) => !occupiedSlots.has(slot.start)
       );

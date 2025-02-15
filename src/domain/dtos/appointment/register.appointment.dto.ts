@@ -41,7 +41,7 @@ export class RegisterAppointmentDto {
       new RegisterAppointmentDto(
         dentistId,
         patientId,
-        new Date(date),
+        date,
         dayOfWeek,
         start,
         end,

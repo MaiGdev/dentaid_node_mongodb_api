@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
+import { DentistModel } from "./dentist.model";
 
 interface IDentistSchedule extends Document {
   dentist: string;
@@ -13,10 +14,15 @@ interface IDentistSchedule extends Document {
 const dentistScheduleSchema = new Schema({
   dentist: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Dentist",
     required: true,
   },
-  dayOfWeek: { type: Number, required: true },
+  dayOfWeek: {
+    type: Number,
+    required: true,
+    min: 0,
+    max: 6,
+  },
   startTime: { type: String, required: true },
   endTime: { type: String, required: true },
   slotDuration: { type: Number, default: 30 },
@@ -29,7 +35,17 @@ dentistScheduleSchema.set("toJSON", {
   versionKey: false,
   transform: function (doc, ret, options) {
     delete ret._id;
+    ret.slots.forEach((slot: any) => delete slot._id);
+    ret.slots.forEach((slot: any) => delete slot.id);
   },
+});
+
+dentistScheduleSchema.pre("save", async function (next) {
+  const user = await DentistModel.findById(this.dentist);
+  if (!user) {
+    throw new Error("The referenced user must have the DENTIST_ROLE.");
+  }
+  next();
 });
 
 export const DentistScheduleModel = mongoose.model<IDentistSchedule>(

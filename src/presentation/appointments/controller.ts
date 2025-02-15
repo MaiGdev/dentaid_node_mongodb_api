@@ -22,8 +22,11 @@ export class AppontmentController {
     }
   };
   getAppointments = async (req: Request, res: Response) => {
+    const { status } = req.query;
     try {
-      const appointment = await this.appointmentService.getAppointments();
+      const appointment = await this.appointmentService.getAppointments(
+        String(status)
+      );
 
       return res.status(200).json(appointment);
     } catch (error) {

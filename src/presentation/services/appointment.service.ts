@@ -18,9 +18,30 @@ export class AppointmentService {
     }
   }
 
-  public async getAppointments() {
+  public async getAppointments(status: string) {
+    let appointments;
     try {
-      const appointments = await AppointmentModel.find();
+      if (status === "" || status === "undefined") {
+        appointments = await AppointmentModel.find()
+          .populate({
+            path: "dentist",
+            populate: { path: "user", model: "User" },
+          })
+          .populate({
+            path: "patient",
+            populate: { path: "user", model: "User" },
+          });
+      } else {
+        appointments = await AppointmentModel.find({ status })
+          .populate({
+            path: "dentist",
+            populate: { path: "user", model: "User" },
+          })
+          .populate({
+            path: "patient",
+            populate: { path: "user", model: "User" },
+          });
+      }
       return appointments;
     } catch (error) {
       throw new Error(`Error getting appointments: ${error}`);
