@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/MaiGdev/dentaid_node_mongodb_api/compare/v1.4.2...v1.5.0) (2025-02-17)
+
+
+### Features
+
+* Implement general information update functionality ([d6edba8](https://github.com/MaiGdev/dentaid_node_mongodb_api/commit/d6edba85b6ca028cc39e441b5a08d7d26bb844b7))
+
 ## [1.4.0](https://github.com/MaiGdev/dentaid_node_mongodb_api/compare/v1.3.0...v1.4.0) (2025-02-15)
 
 
