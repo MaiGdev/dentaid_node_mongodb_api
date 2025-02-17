@@ -10,7 +10,8 @@ export class UserRoutes {
     const userController = new UserController(userService);
 
     router.get("/", userController.getUsersByUserTypeFilter);
-    router.get("/getUser", userController.getUserByUserTypeId); 
+    router.get("/getUser", userController.getUserByUserTypeId);
+    router.put("/", userController.updateUser);
 
     return router;
   }

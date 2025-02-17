@@ -1,7 +1,11 @@
 import mongoose from "mongoose";
 import { DentistModel, PatientModel, UserModel } from "../../data/models";
 import { CustomError } from "../../domain";
-import { RegisterDentistDto, RegisterPatientDto } from "../../domain/dtos";
+import {
+  RegisterDentistDto,
+  RegisterPatientDto,
+  UpdateUserDto,
+} from "../../domain/dtos";
 
 export class UserService {
   public async getUsersByUserType(userType: string) {
@@ -21,6 +25,41 @@ export class UserService {
     } catch (error) {
       console.error(`Error registering dentist: ${error}`);
       throw error;
+    }
+  }
+
+  public async getUserByUserTypeId(id: string, userType: string) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error("ID inválido");
+    }
+
+    try {
+      switch (userType) {
+        case "ADMIN_ROLE":
+          const admin = await UserModel.findById(id);
+          return {
+            user: admin,
+          };
+
+        case "PATIENT_ROLE":
+          const patient = await PatientModel.findOne({
+            _id: id,
+          }).populate("user");
+          if (!patient) throw new Error("Paciente no encontrado");
+          return patient;
+
+        case "DENTIST_ROLE":
+          const dentist = await DentistModel.findOne({
+            _id: id,
+          }).populate("user");
+          if (!dentist) throw new Error("Dentista no encontrado");
+          return dentist;
+
+        default:
+          return await UserModel.findById(id);
+      }
+    } catch (error) {
+      throw new Error(`Error obteniendo usuario: ${error}`);
     }
   }
 
@@ -69,38 +108,23 @@ export class UserService {
     }
   }
 
-  public async getUserByUserTypeId(id: string, userType: string) {
+  public async updateUser(id: string, updateUserDto: UpdateUserDto) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new Error("ID inválido");
     }
-
     try {
-      switch (userType) {
-        case "ADMIN_ROLE":
-          const admin = await UserModel.findById(id);
-          return {
-            user: admin,
-          };
+      const user = await UserModel.findByIdAndUpdate(id, updateUserDto, {
+        new: true,
+      });
+      if (!user) throw CustomError.notFound("User not found");
 
-        case "PATIENT_ROLE":
-          const patient = await PatientModel.findOne({
-            _id: id,
-          }).populate("user");
-          if (!patient) throw new Error("Paciente no encontrado");
-          return patient;
-
-        case "DENTIST_ROLE":
-          const dentist = await DentistModel.findOne({
-            _id: id,
-          }).populate("user");
-          if (!dentist) throw new Error("Dentista no encontrado");
-          return dentist;
-
-        default:
-          return await UserModel.findById(id);
+      return {
+        message: "User updated successfully",
+        user,
       }
     } catch (error) {
-      throw new Error(`Error obteniendo usuario: ${error}`);
+      console.error(`Error updating user: ${error}`);
+      throw error;
     }
   }
 }
