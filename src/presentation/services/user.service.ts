@@ -4,8 +4,10 @@ import { CustomError } from "../../domain";
 import {
   RegisterDentistDto,
   RegisterPatientDto,
+  UpdatePatientDto,
   UpdateUserDto,
 } from "../../domain/dtos";
+import { UpdateDentistDto } from "../../domain/dtos/users/dentist/update-dentist.dto";
 
 export class UserService {
   public async getUsersByUserType(userType: string) {
@@ -108,22 +110,126 @@ export class UserService {
     }
   }
 
-  public async updateUser(id: string, updateUserDto: UpdateUserDto) {
+  public async updateUser(
+    id: string,
+    userType: string,
+    updateUserDto: UpdateUserDto
+  ) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error("ID inválido");
+    }
+
+    let currentUser: any;
+
+    try {
+      switch (userType) {
+        case "ADMIN_ROLE":
+          currentUser = await UserModel.findById(id);
+          break;
+
+        case "PATIENT_ROLE":
+          currentUser = await PatientModel.findOne({ _id: id }).populate(
+            "user"
+          );
+          /*    currentUser = patientData?.user; */
+          break;
+
+        case "DENTIST_ROLE":
+          currentUser = await DentistModel.findOne({ _id: id }).populate(
+            "user"
+          );
+          /*           currentUser = dentistData?.user; */
+          break;
+
+        default:
+          currentUser = await UserModel.findById(id);
+      }
+
+      if (!currentUser) throw new Error("User not found");
+
+      const changes: Partial<UpdateUserDto> = {};
+      Object.entries(updateUserDto).forEach(([key, value]) => {
+        const typedKey = key as keyof UpdateUserDto;
+        if (value !== currentUser[typedKey]) {
+          changes[typedKey] = value;
+        }
+      });
+
+      if (Object.keys(changes).length === 0) {
+        return {
+          message: "No changes detected",
+          user: currentUser,
+        };
+      }
+
+      let updatedUser;
+
+      if (currentUser) {
+        if ("user" in currentUser) {
+          updatedUser = await UserModel.findByIdAndUpdate(
+            currentUser?.user.id,
+            updateUserDto,
+            {
+              new: true,
+              runValidators: true,
+            }
+          );
+        } else {
+          updatedUser = await UserModel.findByIdAndUpdate(id, updateUserDto, {
+            new: true,
+            runValidators: true,
+          });
+        }
+      }
+
+      if (!updatedUser) throw CustomError.notFound("User not updated");
+
+      return {
+        message: "User updated successfully",
+        user: updatedUser,
+      };
+    } catch (error) {
+      console.error(`Error updating user: ${error}`);
+      throw error;
+    }
+  }
+
+  public async updateDentist(id: string, updateDentistDto: UpdateDentistDto) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new Error("ID inválido");
     }
     try {
-      const user = await UserModel.findByIdAndUpdate(id, updateUserDto, {
+      const user = await DentistModel.findByIdAndUpdate(id, updateDentistDto, {
         new: true,
       });
-      if (!user) throw CustomError.notFound("User not found");
+      if (!user) throw CustomError.notFound("Dentist not found");
 
       return {
-        message: "User updated successfully",
+        message: "Dentist updated successfully",
         user,
-      }
+      };
     } catch (error) {
-      console.error(`Error updating user: ${error}`);
+      console.error(`Error updating dentist: ${error}`);
+      throw error;
+    }
+  }
+
+  public async updatePatient(id: string, updatePatientDto: UpdatePatientDto) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new Error("ID inválido");
+    }
+    try {
+      const user = await PatientModel.findByIdAndUpdate(id, updatePatientDto, {
+        new: true,
+      });
+      if (!user) throw CustomError.notFound("Patient not found");
+
+      return {
+        message: "Patient updated successfully",
+        user,
+      };
+    } catch (error) {
+      console.error(`Error updating patient: ${error}`);
       throw error;
     }
   }

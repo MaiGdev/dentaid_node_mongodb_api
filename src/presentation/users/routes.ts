@@ -12,6 +12,8 @@ export class UserRoutes {
     router.get("/", userController.getUsersByUserTypeFilter);
     router.get("/getUser", userController.getUserByUserTypeId);
     router.put("/", userController.updateUser);
+    router.put("/dentist", userController.updateDentist);
+    router.put("/patient", userController.updatePatient);
 
     return router;
   }

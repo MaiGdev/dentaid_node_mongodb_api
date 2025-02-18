@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
-import { UpdateUserDto } from "../../domain/dtos";
+import {
+  UpdateDentistDto,
+  UpdatePatientDto,
+  UpdateUserDto,
+} from "../../domain/dtos";
 import { handleCustomError } from "../helpers";
 import { UserService } from "../services";
 
@@ -31,7 +35,7 @@ export class UserController {
   getUserByUserTypeId = async (req: Request, res: Response) => {
     const { id, userType } = req.query;
 
-    if (!id || !userType) {
+    if (!id) {
       return res.status(400).json({ message: "id and userType are required" });
     }
 
@@ -50,14 +54,48 @@ export class UserController {
   };
 
   updateUser = async (req: Request, res: Response) => {
-    const { id } = req.query;
-    const [error, updateUserDto] = UpdateUserDto.register(req.body);
+    const { id, userType } = req.query;
+    const [error, updateUserDto] = UpdateUserDto.update(req.body);
 
     if (!id) return res.status(404).json({ error: "ID not provided" });
     if (error) return res.status(400).json({ error });
 
     this.userService
-      .updateUser(String(id), updateUserDto!)
+      .updateUser(String(id), String(userType), updateUserDto!)
+      .then((user) => {
+        res.status(200).json(user);
+      })
+      .catch((err) => {
+        handleCustomError(err, res);
+      });
+  };
+
+  updateDentist = (req: Request, res: Response) => {
+    const { id } = req.query;
+    const [error, updateDentistDto] = UpdateDentistDto.update(req.body);
+
+    if (!id) return res.status(404).json({ error: "ID not provided" });
+    if (error) return res.status(400).json({ error });
+
+    this.userService
+      .updateDentist(String(id), updateDentistDto!)
+      .then((user) => {
+        res.status(200).json(user);
+      })
+      .catch((err) => {
+        handleCustomError(err, res);
+      });
+  };
+
+  updatePatient = (req: Request, res: Response) => {
+    const { id } = req.query;
+    const [error, updatePatientDto] = UpdatePatientDto.update(req.body);
+
+    if (!id) return res.status(404).json({ error: "ID not provided" });
+    if (error) return res.status(400).json({ error });
+
+    this.userService
+      .updatePatient(String(id), updatePatientDto!)
       .then((user) => {
         res.status(200).json(user);
       })

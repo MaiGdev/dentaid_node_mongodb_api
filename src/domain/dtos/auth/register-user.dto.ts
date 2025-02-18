@@ -34,8 +34,6 @@ export class RegisterUserDto {
       "password",
       "gender",
       "identification",
-      "phoneNumber",
-      "emergencyPhoneNumber",
       "address",
       "birthdate",
     ];

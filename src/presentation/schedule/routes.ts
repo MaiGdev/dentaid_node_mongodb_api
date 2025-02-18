@@ -9,11 +9,6 @@ export class ScheduleRoutes {
     const service = new ScheduleService();
     const controller = new ScheduleController(service);
 
-    /* 
-    GET    /api/appointments/patient/:patientId/upcoming  // upcoming patient appointments
-    POST   /api/appointments/patient/book                 // booking
-    POST   /api/availability/dentist/:dentistId/slots    
-    */
     router.post("/", controller.registerSchedule);
     router.get("/", controller.getScheduleByDentist);
     router.get("/availableSlots", controller.getAvailableSlots);

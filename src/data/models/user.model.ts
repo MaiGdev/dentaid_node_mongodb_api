@@ -40,13 +40,15 @@ const userSchema = new mongoose.Schema({
   },
   phoneNumber: {
     type: String,
-    required: [true, "Phone is required"],
+    sparse: true,
     unique: true,
+/*     match: /^[0-9]{10}$/, */
   },
   emergencyPhoneNumber: {
     type: String,
-    required: [true, "Phone is required"],
+    sparse: true,
     unique: true,
+   /*  match: /^[0-9]{10}$/, */
   },
   address: {
     type: String,

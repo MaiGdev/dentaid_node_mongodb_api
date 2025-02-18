@@ -11,7 +11,7 @@ export class UpdateUserDto {
     public dateOfBirth?: Date
   ) {}
 
-  static register(object: { [key: string]: any }): [string?, UpdateUserDto?] {
+  static update(object: { [key: string]: any }): [string?, UpdateUserDto?] {
     const {
       fullName,
       gender,
@@ -26,6 +26,8 @@ export class UpdateUserDto {
       if (!MomentAdapter.isValid(dateOfBirth)) return ["Date format incorrect"];
     }
 
+    const xDateOfBirth = new Date(dateOfBirth);
+
     const registerDto = new UpdateUserDto(
       fullName,
       gender,
@@ -33,7 +35,7 @@ export class UpdateUserDto {
       phoneNumber,
       emergencyPhoneNumber,
       address,
-      dateOfBirth
+      xDateOfBirth
     );
     return [undefined, registerDto];
   }
