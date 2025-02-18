@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://github.com/MaiGdev/dentaid_node_mongodb_api/compare/v1.5.0...v1.6.0) (2025-02-18)
+
+
+### Features
+
+* Implement Dentist and Patient update functionality ([7a4fd9b](https://github.com/MaiGdev/dentaid_node_mongodb_api/commit/7a4fd9b91232f2e51dd275f69786b8d5eaebd8bc))
+
 ## [1.5.0](https://github.com/MaiGdev/dentaid_node_mongodb_api/compare/v1.4.2...v1.5.0) (2025-02-17)
 
 
