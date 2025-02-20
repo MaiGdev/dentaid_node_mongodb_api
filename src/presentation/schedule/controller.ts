@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { RegisterScheduleDto } from "../../domain/dtos/schedule/register-schedule.dto";
+import { UpdateScheduleDto } from "../../domain/dtos/schedule/update-schedule.dto";
 import { handleCustomError } from "../helpers/handleCustomError";
 import { ScheduleService } from "../services/schedule.service";
 
@@ -15,6 +16,18 @@ export class ScheduleController {
 
     this.scheduleService
       .registerSchedule(registerScheduleDto!)
+      .then((schedule) => res.status(200).json(schedule))
+      .catch((err) => handleCustomError(err, res));
+  };
+  updateSchedule = (req: Request, res: Response) => {
+    const [error, updateScheduleDto] = UpdateScheduleDto.updateSchedule(
+      req.body
+    );
+
+    if (error) return res.status(400).json({ error });
+
+    this.scheduleService
+      .updateSchedule(updateScheduleDto!)
       .then((schedule) => res.status(200).json(schedule))
       .catch((err) => handleCustomError(err, res));
   };
