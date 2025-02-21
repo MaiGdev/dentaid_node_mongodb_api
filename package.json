@@ -1,6 +1,6 @@
 {
   "name": "dentaid_node_mongodb_api",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "main": "index.js",
   "scripts": {
     "dev": "tsnd --respawn --clear src/app.ts",
