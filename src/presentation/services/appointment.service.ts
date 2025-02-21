@@ -30,7 +30,8 @@ export class AppointmentService {
           .populate({
             path: "patient",
             populate: { path: "user", model: "User" },
-          });
+          })
+          .sort({ date: -1 });;
       } else {
         appointments = await AppointmentModel.find({ status })
           .populate({
@@ -40,7 +41,8 @@ export class AppointmentService {
           .populate({
             path: "patient",
             populate: { path: "user", model: "User" },
-          });
+          })
+          .sort({ date: -1 });;
       }
       return appointments;
     } catch (error) {
