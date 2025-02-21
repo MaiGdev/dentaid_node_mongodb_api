@@ -72,7 +72,7 @@ async function main() {
         return patient.save();
       })
   );
-  
+
   // Create schedule for dentists
   const schedules = await Promise.all(
     dentists.map(async (dentist) => {
@@ -102,7 +102,7 @@ async function main() {
         const appointment = new AppointmentModel({
           dentist: dentist._id,
           patient: patient._id,
-          date: new Date(),
+          date: new Date().toISOString().split("T")[0],
           dayOfWeek: schedule.dayOfWeek,
           start: slot.start,
           end: slot.end,

@@ -35,12 +35,15 @@ export class AppontmentController {
   };
   getPatientAppointment = async (req: Request, res: Response) => {
     const { id } = req.params;
+    const { date } = req.body;
 
     if (!id) return res.status(400).json("ID not provided");
 
     try {
+      const formattedDate = new Date(date);
       const appointment = await this.appointmentService.getPatientAppointment(
-        id
+        id,
+        formattedDate
       );
 
       return res.status(200).json(appointment);

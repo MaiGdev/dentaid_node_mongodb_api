@@ -48,9 +48,17 @@ export class AppointmentService {
     }
   }
 
-  public async getPatientAppointment(patientId: string) {
+  public async getPatientAppointment(patientId: string, date: Date) {
+    let appointments;
     try {
-      const appointments = await AppointmentModel.find({ patient: patientId });
+      if (date.toString() !== "Invalid Date" ) {
+        appointments = await AppointmentModel.find({
+          patient: patientId,
+          date: date,
+        });
+      } else {
+        appointments = await AppointmentModel.find({ patient: patientId });
+      }
       return appointments;
     } catch (error) {
       throw new Error(`Error getting appointments: ${error}`);

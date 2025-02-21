@@ -64,7 +64,6 @@ export class ScheduleService {
         throw CustomError.badRequest("Dentist already has a schedule");
       }
       for (const scheduleEntity of registerScheduleDto.schedule) {
-
         const scheduleModel = new DentistScheduleModel({
           dentist: scheduleEntity.dentist,
           dayOfWeek: scheduleEntity.dayOfWeek,
