@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.8.2](https://github.com/MaiGdev/dentaid_node_mongodb_api/compare/v1.8.1...v1.8.2) (2025-02-21)
+
+
+### Bug Fixes
+
+* Order appointments by date in getAppointments method ([04a91c9](https://github.com/MaiGdev/dentaid_node_mongodb_api/commit/04a91c9f2b08c1c7e84e6f375a225db9fe77bcf2))
+
 ### [1.8.1](https://github.com/MaiGdev/dentaid_node_mongodb_api/compare/v1.8.0...v1.8.1) (2025-02-21)
 
 
