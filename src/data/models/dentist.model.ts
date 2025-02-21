@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { UserModel } from "./user.model";
 
 const dentistSchema = new mongoose.Schema({
   user: {
@@ -35,14 +34,6 @@ dentistSchema.set("toJSON", {
   transform: function (doc, ret, options) {
     delete ret._id;
   },
-});
-
-dentistSchema.pre("save", async function (next) {
-  const user = await UserModel.findById(this.user);
-  if (!user || !user.role.includes("DENTIST_ROLE")) {
-    throw new Error("The referenced user must have the DENTIST_ROLE.");
-  }
-  next();
 });
 
 export const DentistModel = mongoose.model("Dentist", dentistSchema);
