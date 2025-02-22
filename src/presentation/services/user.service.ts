@@ -25,7 +25,7 @@ export class UserService {
           return await UserModel.find();
       }
     } catch (error) {
-      console.error(`Error registering dentist: ${error}`);
+      console.error(`Error getting users: ${error}`);
       throw error;
     }
   }
@@ -44,16 +44,29 @@ export class UserService {
           };
 
         case "PATIENT_ROLE":
-          const patient = await PatientModel.findOne({
+          let patient;
+          patient = await PatientModel.findOne({
             _id: id,
           }).populate("user");
+          if (!patient) {
+            patient = await PatientModel.findOne({
+              user: id,
+            }).populate("user");
+          }
           if (!patient) throw new Error("Paciente no encontrado");
           return patient;
 
         case "DENTIST_ROLE":
-          const dentist = await DentistModel.findOne({
+          let dentist;
+          dentist = await DentistModel.findOne({
             _id: id,
           }).populate("user");
+
+          if (!dentist) {
+            dentist = await DentistModel.findOne({
+              user: id,
+            }).populate("user");
+          }
           if (!dentist) throw new Error("Dentista no encontrado");
           return dentist;
 
