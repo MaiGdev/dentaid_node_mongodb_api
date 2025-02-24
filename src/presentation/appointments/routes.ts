@@ -11,7 +11,8 @@ export class AppointmentRoutes {
 
     router.post("/", controller.registerAppointment);
     router.get("/", controller.getAppointments);
-    router.get("/:id", controller.getPatientAppointment);
+    router.get("/patient/:id", controller.getPatientAppointment);
+    router.get("/dentist/:id", controller.getDentistAppointment);
 
     return router;
   }
