@@ -212,14 +212,34 @@ export class UserService {
       throw new Error("ID inválido");
     }
     try {
-      const user = await DentistModel.findByIdAndUpdate(id, updateDentistDto, {
-        new: true,
+      const user = await DentistModel.findOne({
+        user: id,
       });
-      if (!user) throw CustomError.notFound("Dentist not found");
+
+      let updatedUser;
+      if (user) {
+        updatedUser = await DentistModel.findByIdAndUpdate(
+          user.id,
+          updateDentistDto,
+          {
+            new: true,
+          }
+        );
+      } else {
+        updatedUser = await DentistModel.findByIdAndUpdate(
+          id,
+          updateDentistDto,
+          {
+            new: true,
+          }
+        );
+      }
+
+      if (!updatedUser) throw CustomError.notFound("Dentist not found");
 
       return {
         message: "Dentist updated successfully",
-        user,
+        updatedUser,
       };
     } catch (error) {
       console.error(`Error updating dentist: ${error}`);
@@ -232,14 +252,35 @@ export class UserService {
       throw new Error("ID inválido");
     }
     try {
-      const user = await PatientModel.findByIdAndUpdate(id, updatePatientDto, {
-        new: true,
+      const user = await PatientModel.findOne({
+        user: id,
       });
-      if (!user) throw CustomError.notFound("Patient not found");
+
+      let updateduser;
+
+      if (user) {
+        updateduser = await PatientModel.findByIdAndUpdate(
+          user.id,
+          updatePatientDto,
+          {
+            new: true,
+          }
+        );
+      } else {
+        updateduser = await PatientModel.findByIdAndUpdate(
+          id,
+          updatePatientDto,
+          {
+            new: true,
+          }
+        );
+      }
+
+      if (!updateduser) throw CustomError.notFound("Patient not found");
 
       return {
         message: "Patient updated successfully",
-        user,
+        updateduser,
       };
     } catch (error) {
       console.error(`Error updating patient: ${error}`);
