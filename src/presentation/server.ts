@@ -1,9 +1,6 @@
-import express, { Router } from "express";
-import path from "path";
-import cors from "cors"; 
 import compression from "compression";
-
-
+import cors from "cors";
+import express, { Router } from "express";
 
 interface Options {
   port: number;
@@ -26,9 +23,8 @@ export class Server {
   }
 
   async start() {
-    
-    this.app.use(cors())
-this.app.use(compression());
+    this.app.use(cors());
+    this.app.use(compression());
 
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
@@ -40,7 +36,6 @@ this.app.use(compression());
     this.app.get("*", (req, res) => {
       res.sendFile("index.html", { root: this.publicPath });
     });
-
 
     this.serverListener = this.app.listen(this.port, () => {
       console.log(`Server is running on port ${this.port}`);
