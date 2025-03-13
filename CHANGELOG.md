@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.9.0](https://github.com/MaiGdev/dentaid_node_mongodb_api/compare/v1.8.2...v1.9.0) (2025-03-13)
+
+
+### Features
+
+* Retrieve dentist appointments and refactor patient appointment retrieval ([540c65f](https://github.com/MaiGdev/dentaid_node_mongodb_api/commit/540c65f16d8db284fadd5b5a8ab18fd2d3f0aae9))
+
+
+### Bug Fixes
+
+* Fix updatePatient and updateDentist ([617128f](https://github.com/MaiGdev/dentaid_node_mongodb_api/commit/617128fb0125d567877cc3f18d1a6802f7827ce3))
+* Retrieve dentist or patient by their ID based on userType or as a general user ([cb6d9d0](https://github.com/MaiGdev/dentaid_node_mongodb_api/commit/cb6d9d0a544e561457293b41c1c9250b057e88fa))
+
 ### [1.8.2](https://github.com/MaiGdev/dentaid_node_mongodb_api/compare/v1.8.1...v1.8.2) (2025-02-21)
 
 
